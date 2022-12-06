@@ -2,6 +2,7 @@
     <head>
     </head>
     <body>
+        <p>Your public key's e is {{ rsa_e }}</p>
         <h1>New Note</h1>
         <form action={% url 'new' %} method="post">
             {% csrf_token %}

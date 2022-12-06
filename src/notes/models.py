@@ -1,21 +1,14 @@
 import base64
+from Crypto.Util.number import long_to_bytes
 
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
 
 class Note(models.Model):
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-    enc_text = models.BinaryField()
+    text = models.CharField(max_length=128)
 
-    def b64_enc_text(self):
-        return base64.b64encode(self.enc_text)
-
-    def set_text(self, text):
-        self.enc_text = text.encode()
-
-    def get_text(self):
-        return self.enc_text.decode()
+    def encrypt(self, e):
+        m = int(self.text.encode("utf-8").hex(), 16)
+        c = pow(m, e, settings.RSA_N)
+        return base64.b64encode(long_to_bytes(c)).decode()

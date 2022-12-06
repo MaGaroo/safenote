@@ -6,9 +6,11 @@ from .models import Note
 
 @login_required
 def notes_view(request):
-    notes = Note.objects.filter(owner=request.user).order_by("-id").all()
+    notes = Note.objects.order_by("-id").all()
+    rsa_e = request.user.profile.rsa_e
     return render(request, "notes/list.html", {
-        "notes": list(map(lambda note: note.get_text(), notes)),
+        "rsa_e": rsa_e,
+        "notes": list(map(lambda note: note.encrypt(rsa_e), notes)),
     })
 
 
@@ -17,7 +19,5 @@ def new_note_view(request):
     if request.method != "POST":
         return redirect("notes")
     text = request.POST["note"]
-    note = Note(owner=request.user)
-    note.set_text(text)
-    note.save()
+    Note(text=text).save()
     return redirect("notes")

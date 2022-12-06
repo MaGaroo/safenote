@@ -1,0 +1,22 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <h1>New Note</h1>
+        <form action={% url 'new' %} method="post">
+            {% csrf_token %}
+            <textarea name="note"></textarea>
+            <br />
+            <br />
+            <button type="submit">Add</button>
+        </form>
+        <hr />
+        <h1>Notes List</h1>
+        {% for note in notes %}
+        <h2>Note #{{ forloop.counter }}</h2>
+        <p>
+            {{ note }}
+        </p>
+        {% endfor %}
+    </body>
+</html>
